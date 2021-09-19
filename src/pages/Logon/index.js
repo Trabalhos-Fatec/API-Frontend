@@ -1,20 +1,46 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useRef } from "react";
+import { Link, useHistory } from "react-router-dom";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
+import { Toast } from "primereact/toast"
+import axios from "axios"
 
 // import api from '../../services/api';
 
 import "./styles.css";
 // import { login, hasUser } from "services/auth";
 
-export default function SignIn(props) {
+export default function SignIn(event) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [error, setError] = useState(null);
 
-  function handleSignIn(event) {
-    props.history.push("/profile");
+  const history = useHistory();
+
+  const toast = useRef();
+
+
+  async function handleSignIn(event) {
+    event.preventDefault();
+
+    const login = {
+      "email":email,
+      "senha":password
+    };
+
+    axios({
+      timeout: 500,
+      method: 'post',
+      url: 'http://localhost:8080/usuario/login/',
+      data: login
+    }).then(function (response){
+      if(response.data){
+        history.push("/profile");
+      } else {
+        toast.current.show({severity: 'error', summary: 'Erro!', detail: 'E-mail ou senha incorretos'});
+      }
+    }).catch(function (error){
+      toast.current.show({severity: 'error', summary: 'Erro!', detail: 'E-mail ou senha incorretos'});
+    })
   }
 
   //   async function handleSignIn(event) {
@@ -44,6 +70,7 @@ export default function SignIn(props) {
   return (
     <div className="logon-container">
       <div className="surface-card p-5 shadow-6 border-round lg:w-6">
+      <Toast ref={toast} />
         <section className="">
           <form onSubmit={handleSignIn}>
             {/* {!!error && <p>{error}</p>} */}

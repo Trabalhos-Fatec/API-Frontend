@@ -5,6 +5,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import Logon from './pages/Logon';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
+import Sucesso from './pages/Sucesso';
 
 import { isAuthenticated } from "./services/auth";
 
@@ -27,6 +28,7 @@ const Routes = () => (
             <Route path="/" exact component={ Logon }/>
             <Route path="/register" component={ Register }/>
             <Route path="/profile" component={ Profile } />
+            <Route path="/sucesso" component={ Sucesso } />
             <Route path="*" component={() => <h1>Page not found</h1>} />
         </Switch>
     </BrowserRouter>
