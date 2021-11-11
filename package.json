@@ -1,6 +1,9 @@
 {
   "name": "api-frontend",
   "version": "0.1.0",
+  "engines": {
+    "node": "14.x"
+  },
   "private": true,
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "^3.3.0",
@@ -54,8 +57,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "engines":{
-     "node" : ">=0.12" 
   }
 }
