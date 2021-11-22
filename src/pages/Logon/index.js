@@ -27,8 +27,6 @@ export default function SignIn(event) {
       password: password,
     }))
 
-    history.push("/profile");
-
     axios({
       method: 'post',
       url: 'http://localhost:8080/login/',
