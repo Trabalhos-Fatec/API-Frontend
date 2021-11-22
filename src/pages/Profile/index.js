@@ -39,13 +39,9 @@ export default function Profile() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      api({
-        method: 'get',
-        url: '/usuario/',
-        headers: {
+      api.get('/usuario', {
           Authorization: localStorage.getItem("token"),
-        }
-      })
+        })
         .then(response => {
           setListUser(response.data);
         })
@@ -74,13 +70,8 @@ export default function Profile() {
 
   function editSave(json) {
     if (isAuthenticated) {
-      api({
-        method: 'put',
-        url: `/usuario`,
-        headers: {
+      api.put(`/usuario`, json,{
           Authorization: 'Bearer' + getToken
-        },
-        data: json
       })
         .then(response => {
           loadUserList()
@@ -111,12 +102,8 @@ export default function Profile() {
   };
 
   function deleteUser(id) {
-    api({
-      method: 'delete',
-      url: `/usuario/${id}`,
-      headers: {
+    api.delete(`/usuario/${id}`,{
         Authorization: localStorage.getItem("token"),
-      }
     })
       .then(response => {
         loadUserList()
@@ -133,12 +120,8 @@ export default function Profile() {
   }
 
   function loadUserList() {
-    api({
-      method: 'get',
-      url: '/usuario/',
-      headers: {
+    api.get('/usuario',{
         Authorization: localStorage.getItem("token"),
-      }
     })
       .then(response => {
         setListUser(response.data);

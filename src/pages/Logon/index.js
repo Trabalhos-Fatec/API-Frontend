@@ -5,7 +5,8 @@ import { Button } from "primereact/button";
 import { Toast } from "primereact/toast"
 import { useDispatch } from 'react-redux';
 import { login } from "../../feature/userSlice";
-import axios from "axios"
+import axios from "axios";
+import api from '../../services/api';
 
 import "./styles.css";
 
@@ -27,11 +28,7 @@ export default function SignIn(event) {
       password: password,
     }))
 
-    axios({
-      method: 'post',
-      url: 'http://localhost:8080/login/',
-      data: loggedIn.payload
-    }).then(function (response) {
+    api.get('/login', loggedIn.payload).then(function (response) {
       if (response.data) {
         localStorage.setItem('token', response.data.token);
         history.push("/profile");

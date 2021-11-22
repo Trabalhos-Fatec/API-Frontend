@@ -51,8 +51,6 @@ export default function Resgister() {
           if(konamitest[press]!==konami[press])
             isK=false
         }
-        if(isK)
-        alert('Wahoo!')
       }
       window.addEventListener('mousemove', update)
       window.addEventListener('touchmove', update)
@@ -66,7 +64,6 @@ export default function Resgister() {
       }
     },
   )
-
 
   useEffect(() => {
     const fpPromise = FingerprintJS.load();
@@ -84,11 +81,7 @@ export default function Resgister() {
   }, []);
 
   function traceRoute(usuario) {
-    axios({
-      method: 'post',
-      url: `http://localhost:8080/tracerouter/tracerouter/${IP}`,
-      data:usuario
-    })
+    api.post(`/tracerouter/${IP}`, usuario)
       .then((response) => {
         console.log(response)
       }).catch((error) => {
@@ -112,11 +105,7 @@ export default function Resgister() {
       }
     }
     
-    api({
-      method: 'post',
-      url: '/usuario/',
-      data: data
-    })
+    api.post('/usuario', data)
       .then(function (response) {
         traceRoute(response.data)
         toast.current.show({ severity: 'success', summary: 'Sucesso', life: 3000 });

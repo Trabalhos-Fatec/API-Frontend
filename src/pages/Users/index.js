@@ -35,13 +35,8 @@ export default function SignIn(event) {
 
   function editSave(json) {
     if (isAuthenticated) {
-      api({
-        method: 'put',
-        url: `/usuario/`,
-        headers: {
-          Authorization: 'Bearer' + getToken,
-        },
-        data: json
+      api.put('/usuario',json,{
+          Authorization: 'Bearer' + getToken
       })
         .then(response => {
           loadUserList()
@@ -73,12 +68,8 @@ export default function SignIn(event) {
 
   function deleteUser(id) {
     if (isAuthenticated) {
-      api({
-        method: 'delete',
-        url: `/usuario/${id}`,
-        headers: {
-          Authorization: 'Bearer' + getToken,
-        }
+      api.delete(`/usuario/${id}`,{
+          Authorization: 'Bearer' + getToken
       })
         .then(response => {
           loadUserList()
@@ -97,12 +88,8 @@ export default function SignIn(event) {
 
   function loadUserList() {
     if (isAuthenticated) {
-      api({
-        method: 'get',
-        url: '/usuario/',
-        headers: {
-          Authorization: 'Bearer' + getToken,
-        }
+      api('/usuario',{
+          Authorization: 'Bearer' + getToken
       })
         .then(response => {
           setListUser(response.data);
