@@ -34,7 +34,7 @@
     "redux": "^4.1.2",
     "styled-components": "^5.2.0"
   },
-  "proxy": "https://unique-user-identify-back.herokuapp.com"
+  "proxy": "https://unique-user-identify-back.herokuapp.com",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
