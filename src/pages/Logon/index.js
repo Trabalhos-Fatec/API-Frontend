@@ -28,7 +28,7 @@ export default function SignIn(event) {
       password: password,
     }))
 
-    api.get('/login', loggedIn.payload).then(function (response) {
+    api.post('/login', loggedIn.payload).then(function (response) {
       if (response.data) {
         localStorage.setItem('token', response.data.token);
         history.push("/profile");
