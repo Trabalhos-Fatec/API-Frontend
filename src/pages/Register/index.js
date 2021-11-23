@@ -74,7 +74,7 @@ export default function Resgister() {
         setFingerprint(result.visitorId)
         setComponents(JSON.stringify(result))
 
-        const res = await axios.get('https://geolocation-db.com/json/')
+        const res = await axios.get('https://cors-proxy.tk/?url=https://geolocation-db.com/json/')
         setIP(res.data.IPv4)
       })()
 
