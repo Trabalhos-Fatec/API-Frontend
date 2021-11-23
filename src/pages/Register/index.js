@@ -81,7 +81,7 @@ export default function Resgister() {
   }, []);
 
   function traceRoute(usuario) {
-    api.post(`/tracerouter/${IP}`, usuario)
+    api.post(`/tracerouter/tracerouter/${IP}`, usuario)
       .then((response) => {
         console.log(response)
       }).catch((error) => {
