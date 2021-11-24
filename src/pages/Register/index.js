@@ -20,37 +20,43 @@ export default function Resgister() {
   const [IP, setIP] = useState();
   const [fingerprint, setFingerprint] = useState("");
   const [components, setComponents] = useState("");
+  const [currentFocus, setCurrentFocus] = useState("Nenhum");
   const history = useHistory();
   const toast = useRef();
-  const tracking = useRef([]);
-  const presses = useRef([]);
-  let konamitest = [0,0,0,0,0,0,0,0,0,0]
-  const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a']
+  const tracking = useRef({});
+  const presses = useRef({});
   const compare = useRef()                                          
   
 
   useEffect(
     () => {
       const update = (e) => {
-        tracking.current.push({'x':e.x, 'y':e.y, 'click':false})
+          if(tracking.current[currentFocus]!==undefined)
+            tracking.current[currentFocus].push({'x':e.x, 'y':e.y, 'click':false})
+          else
+            tracking.current[currentFocus] = [{'x':e.x, 'y':e.y, 'click':false}]
       }
       const updateClick = e => {
-        tracking.current.push({'x':e.x, 'y':e.y, 'click':true})
+        if(tracking.current[currentFocus]!==undefined)
+          tracking.current[currentFocus].push({'x':e.x, 'y':e.y, 'click':true})
+        else
+          tracking.current[currentFocus] = [{'x':e.x, 'y':e.y, 'click':true}]
       }
       const updateKey = e => {
-        if(compare.current!==undefined)
-        presses.current.push({"key":e.key, "interval":new Date().getTime() - compare.current})
+        if(compare.current!==undefined){
+          if(presses.current[currentFocus]!==undefined)
+            presses.current[currentFocus].push({"key":e.key, "interval":new Date().getTime() - compare.current})
         else
-          presses.current.push({"key":e.key, "interval":0})
+            presses.current[currentFocus] = [{"key":e.key, "interval":new Date().getTime() - compare.current}]
+          }
+        else{
+        if(presses.current[currentFocus]!==undefined)
+          presses.current[currentFocus].push({"key":e.key, "interval":0})
+        else
+          presses.current[currentFocus] = [{"key":e.key, "interval":0}]
+        }
 
         compare.current = new Date().getTime()
-
-        konamitest=[konamitest[1],konamitest[2],konamitest[3],konamitest[4],konamitest[5],konamitest[6],konamitest[7],konamitest[8],konamitest[9],e.key]
-        let isK = true
-        for(const press in konamitest){
-          if(konamitest[press]!==konami[press])
-            isK=false
-        }
       }
       window.addEventListener('mousemove', update)
       window.addEventListener('touchmove', update)
@@ -97,7 +103,7 @@ export default function Resgister() {
       "fingerprint": fingerprint,
       "components": components,
       "presses": JSON.stringify(presses.current),
-      "mouse": JSON.stringify(tracking),
+      "mouse": JSON.stringify(tracking.current),
       "autorizacao": [{ "nome": "ROLE_USER" }],
       "dados": {
         "telefone": [{ telefone }],
@@ -139,8 +145,9 @@ export default function Resgister() {
                     required
                     placeholder="Nome"
                     value={name}
-                    onChange={(event) => setName(event.target.value)}
-                  />
+                    onChange={(event) => {setCurrentFocus('Nome')
+                    setName(event.target.value)}}  
+                    />
                 </div>
                 <div className="">
                   <label
@@ -156,7 +163,8 @@ export default function Resgister() {
                     type="email"
                     placeholder="E-mail"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) => {setCurrentFocus('Email') 
+                      setEmail(event.target.value)}}
                   />
                 </div>
               </div>
@@ -176,7 +184,8 @@ export default function Resgister() {
                     value={telefone}
                     maxlength="12"
                     placeholder="(99) 99999-9999"
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => {setCurrentFocus('Telefone')
+                      setPhone(e.target.value)}}
                   />
                 </div>
                 <div className="">
@@ -193,7 +202,8 @@ export default function Resgister() {
                     className="w-full mb-3"
                     placeholder="Senha"
                     value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    onChange={(event) =>{setCurrentFocus('Senha') 
+                    setPassword(event.target.value)}}
                   />
 
                 </div>
