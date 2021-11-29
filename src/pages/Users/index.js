@@ -10,19 +10,21 @@ import { useForm } from "react-hook-form";
 import { SplitButton } from 'primereact/splitbutton'
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Card } from 'primereact/card';
-
 import api from '../../services/api';
 import { isAuthenticated, getToken, logout } from "../../services/auth";
 
 export default function SignIn(event) {
   const [listUser, setListUser] = useState();
   const history = useHistory();
-  const { register, handleSubmit, setValue } = useForm({});
+  const { register, handleSubmit, setValue, getValues } = useForm({});
   const [displayEdit, setDisplayEdit] = useState(false);
+  const [displayDetails, setDisplayDetais] = useState(false);
   const [modalHeader, setModalHeader] = useState('');
+  const [objDetail, setObjDetail] = useState();
   const toast = useRef(null);
   const dialogFuncMap = {
-    'displayEdit': setDisplayEdit
+    'displayEdit': setDisplayEdit,
+    'displayDetails': setDisplayDetais
   }
 
   function handleLogout() {
@@ -35,8 +37,8 @@ export default function SignIn(event) {
 
   function editSave(json) {
     if (isAuthenticated) {
-      api.put('/usuario',json,{
-          Authorization: 'Bearer' + getToken
+      api.put('/usuario', json, {
+        Authorization: 'Bearer' + getToken
       })
         .then(response => {
           loadUserList()
@@ -68,8 +70,8 @@ export default function SignIn(event) {
 
   function deleteUser(id) {
     if (isAuthenticated) {
-      api.delete(`/usuario/${id}`,{
-          Authorization: 'Bearer' + getToken
+      api.delete(`/usuario/${id}`, {
+        Authorization: 'Bearer' + getToken
       })
         .then(response => {
           loadUserList()
@@ -88,8 +90,8 @@ export default function SignIn(event) {
 
   function loadUserList() {
     if (isAuthenticated) {
-      api('/usuario',{
-          Authorization: 'Bearer' + getToken
+      api('/usuario', {
+        Authorization: 'Bearer' + getToken
       })
         .then(response => {
           setListUser(response.data);
@@ -121,13 +123,19 @@ export default function SignIn(event) {
 
   function actionTemplate(rowData) {
     return (
-      <SplitButton label="Editar" className="p-button-rounded" onClick={() => showModal('displayEdit', "Editar", rowData)} model={actionBodyTemplate(rowData)} ></SplitButton>
+      <SplitButton label="Detalhes" className="p-button-rounded" onClick={() => detalhar(rowData)} model={actionBodyTemplate(rowData)} ></SplitButton>
     );
+  }
+
+  function detalhar(rowData) {
+    showModal('displayDetails', "Detalhar", rowData)
+    setObjDetail(listUser.find(item => { return item.id == rowData.id }))
   }
 
   function actionBodyTemplate(rowData) {
     return [
-      { label: 'Excluir', icon: 'pi pi-fw pi-trash', command: () => { confirm(rowData) } }
+      { label: 'Excluir', command: () => { confirm(rowData) } },
+      { label: 'Editar', command: () => showModal('displayEdit', "Editar", rowData) }
     ];
   }
 
@@ -172,7 +180,7 @@ export default function SignIn(event) {
           <Card>
 
             <div>
-              <Button label="Mosta lista de usuários" className="ml-3" onClick={loadUserList} />
+              <Button label="Mostra lista de usuários" className="ml-3" onClick={loadUserList} />
               <Button label="Limpar lista de usuários" className="ml-3" onClick={() => setListUser()} />
             </div>
             <div>
@@ -188,8 +196,42 @@ export default function SignIn(event) {
                 </div>
               }
             </div>
+            <Dialog visible={displayDetails} header={`${modalHeader} Usuário`} style={{ width: '40vw' }} onHide={() => onHide('displayDetails')}>
+
+              <div className="row">
+                <div className="col offset-s3 s6">
+
+                  <div className="row">
+                    <p htmlFor="Nome">Nome</p>
+                    <label> {getValues("nome")}</label>
+                  </div>
+
+                  <div className="row">
+                    <p htmlFor="Email">E-mail</p>
+                    <label> {getValues("dados.email.0.email")}</label>
+                  </div>
+                  <div className="row">
+                    <p htmlFor="Telefone">Telefone</p>
+                    <label> {getValues("dados.telefone.0.telefone")}</label>
+                  </div>
+                  <div className="row">
+                    <p htmlFor="Telefone">Telefone</p>
+                    <label> {getValues("dados.telefone.0.telefone")}</label>
+                  </div>
+                  <div className="row">
+                    <p htmlFor="Telefone">Telefone</p>
+                    <label> {getValues("dados.telefone.0.telefone")}</label>
+                  </div>
+                  <div className="row">
+                    <p htmlFor="Telefone">Telefone</p>
+                    <label> {getValues("dados.telefone.0.telefone")}</label>
+                  </div>
+                </div>
+              </div>
+            </Dialog>
 
             <Dialog visible={displayEdit} header={`${modalHeader} Usuário`} style={{ width: '40vw' }} footer={renderFooter('displayEdit')} onHide={() => onHide('displayEdit')}>
+
               <div className="row">
                 <div className="col offset-s3 s6">
 

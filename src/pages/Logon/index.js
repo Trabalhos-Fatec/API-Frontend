@@ -30,6 +30,7 @@ export default function SignIn(event) {
 
     api.post('/login', loggedIn.payload).then(function (response) {
       if (response.data) {
+        localStorage.setItem('authi', response.data.autorizacao)
         localStorage.setItem('token', response.data.token);
         history.push("/profile");
       } else {

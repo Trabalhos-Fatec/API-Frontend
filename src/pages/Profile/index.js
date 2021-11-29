@@ -40,8 +40,8 @@ export default function Profile() {
   useEffect(() => {
     if (isAuthenticated) {
       api.get('/usuario', {
-          Authorization: localStorage.getItem("token"),
-        })
+        Authorization: localStorage.getItem("token"),
+      })
         .then(response => {
           setListUser(response.data);
         })
@@ -54,7 +54,7 @@ export default function Profile() {
   }, [history]);
 
   const dispatch = useDispatch();
-  
+
   function HandleLogout(e) {
     e.preventDefault();
 
@@ -70,8 +70,8 @@ export default function Profile() {
 
   function editSave(json) {
     if (isAuthenticated) {
-      api.put(`/usuario`, json,{
-          Authorization: 'Bearer' + getToken
+      api.put(`/usuario`, json, {
+        Authorization: 'Bearer' + getToken
       })
         .then(response => {
           loadUserList()
@@ -102,8 +102,8 @@ export default function Profile() {
   };
 
   function deleteUser(id) {
-    api.delete(`/usuario/${id}`,{
-        Authorization: localStorage.getItem("token"),
+    api.delete(`/usuario/${id}`, {
+      Authorization: localStorage.getItem("token"),
     })
       .then(response => {
         loadUserList()
@@ -120,8 +120,8 @@ export default function Profile() {
   }
 
   function loadUserList() {
-    api.get('/usuario',{
-        Authorization: localStorage.getItem("token"),
+    api.get('/usuario', {
+      Authorization: localStorage.getItem("token"),
     })
       .then(response => {
         setListUser(response.data);
@@ -226,9 +226,9 @@ export default function Profile() {
             <h3 className="text-blue-900">Painel de controle</h3>
           </div>
           <div className="flex-none flex align-items-center justify-content-center">
-            <Button className="mr-3" onClick={() => { history.push("/users"); }}>
+            {localStorage.getItem("authi") == "ROLE_ADMIN" && <Button className="mr-3" onClick={() => { history.push("/users"); }}>
               Usuários
-            </Button>
+            </Button>}
           </div>
         </div>
       </header>
@@ -248,7 +248,7 @@ export default function Profile() {
                 />
               </div>
               <div>
-                {listUser &&
+                {listUser && localStorage.getItem("authi")=="ROLE_ADMIN"  &&
                   <div className="card">
                     <DataTable value={listUser}>
                       <Column field="id" header="ID"></Column>

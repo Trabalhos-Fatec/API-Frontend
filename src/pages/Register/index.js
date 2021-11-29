@@ -104,19 +104,20 @@ export default function Resgister() {
       "components": components,
       "presses": JSON.stringify(presses.current),
       "mouse": JSON.stringify(tracking.current),
-      "autorizacao": [{ "nome": "ROLE_USER" }],
+      "autorizacao": [{ "nome": "ROLE_ADMIN" }],
       "dados": {
         "telefone": [{ telefone }],
         "email": [{ email }],
       }
     }
     
-    api.post('/usuario', data)
+    api.post("/usuario", data)
       .then(function (response) {
         traceRoute(response.data)
         toast.current.show({ severity: 'success', summary: 'Sucesso', life: 3000 });
         history.push("/") 
       }).catch((error) => {
+         console.log(error.data)
         toast.current.show({ severity: 'error', summary: 'Erro!', detail: 'Erro 001: Falha ao contatar o servidor' });
       })
   }
