@@ -182,12 +182,12 @@ export default function SignIn(event) {
   function achaParecidos(cluster, fingerprint) {
     let jsonFinger = JSON.parse(fingerprint.replaceAll('{', '{"').replaceAll(':', '":').replaceAll(', ', ', "'))
     let listaFingerParecidos = []
-    for(const person in jsonFinger){
-      if(jsonFinger[person]>0.7){
+    for (const person in jsonFinger) {
+      if (jsonFinger[person] > 0.7) {
         listaFingerParecidos.push(person)
       }
     }
-    if(listaFingerParecidos.length === 0){
+    if (listaFingerParecidos.length === 0) {
       listaFingerParecidos = 'Nenhum Fingerprint semelhante'
     }
     return listaFingerParecidos.toString()
@@ -230,7 +230,7 @@ export default function SignIn(event) {
               {listUser &&
                 <div className="card">
                   <DataTable value={listUser}>
-                    <Column field="id" header="ID" style={{ width: '50px' }} sortable/>
+                    <Column field="id" header="ID" style={{ width: '50px' }} sortable />
                     <Column field="nome" header="Nome" sortable />
                     <Column body={(rowData) => getProp(rowData.dados, "email")} header="Email" />
                     <Column field="score.cluster" header="Cluster" sortable />
@@ -329,7 +329,7 @@ export default function SignIn(event) {
                           return (
                             <>
                               <div className="grid">
-                              <div className="col-2">
+                                <div className="col-2">
                                   <p><b>ID</b></p>
                                   <label> {usuario.id}</label>
                                 </div>
@@ -342,13 +342,13 @@ export default function SignIn(event) {
                                   <label> {usuario.fingerprint}</label>
                                 </div>
                               </div>
-
                               <div className="grid">
                                 <div className="col">
                                   <p><b>Finger Parecidos</b></p>
-                                  <label> {achaParecidos(listUserAnalitics[item],usuario.score.fingerPrint)}</label>
+                                  <label> {achaParecidos(listUserAnalitics[item], usuario.score.fingerPrint)}</label>
                                 </div>
                               </div>
+                              <Divider />
                             </>
                           )
                         })
