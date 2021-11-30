@@ -316,7 +316,7 @@ export default function SignIn(event) {
             <Dialog visible={displayCluster} header={`${modalHeader} Usuário`} style={{ width: '80vw' }} footer={renderFooterAnalitcis('displayCluster')} onHide={() => onHide('displayCluster')}>
 
 
-              <Accordion activeIndex={0}>
+              <Accordion multiple  activeIndex={0}>
                 {listUserAnalitics &&
                   Object.keys(listUserAnalitics).map(item => {
                     return (
