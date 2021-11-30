@@ -187,7 +187,6 @@ export default function SignIn(event) {
         listaFingerParecidos.push(person)
       }
     }
-    console.log(listaFingerParecidos)
     if(listaFingerParecidos.length === 0){
       listaFingerParecidos = 'Nenhum Fingerprint semelhante'
     }
@@ -330,11 +329,15 @@ export default function SignIn(event) {
                           return (
                             <>
                               <div className="grid">
-                                <div className="col">
+                              <div className="col-2">
+                                  <p><b>ID</b></p>
+                                  <label> {usuario.id}</label>
+                                </div>
+                                <div className="col-5">
                                   <p><b>Nome</b></p>
                                   <label> {usuario.nome}</label>
                                 </div>
-                                <div className="col">
+                                <div className="col-5">
                                   <p><b>Fingerprint</b></p>
                                   <label> {usuario.fingerprint}</label>
                                 </div>
