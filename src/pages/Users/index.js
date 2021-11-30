@@ -231,7 +231,7 @@ export default function SignIn(event) {
               {listUser &&
                 <div className="card">
                   <DataTable value={listUser}>
-                    <Column field="id" header="ID" style={{ width: '50px' }} />
+                    <Column field="id" header="ID" style={{ width: '50px' }} sortable/>
                     <Column field="nome" header="Nome" sortable />
                     <Column body={(rowData) => getProp(rowData.dados, "email")} header="Email" />
                     <Column field="score.cluster" header="Cluster" sortable />
