@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import { useHistory } from "react-router-dom";
+import { Accordion, AccordionTab } from 'primereact/accordion';
 import { InputText } from "primereact/inputtext";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -9,22 +10,25 @@ import { Toast } from 'primereact/toast';
 import { useForm } from "react-hook-form";
 import { SplitButton } from 'primereact/splitbutton'
 import { confirmDialog } from 'primereact/confirmdialog';
+import { Divider } from 'primereact/divider'
 import { Card } from 'primereact/card';
 import api from '../../services/api';
 import { isAuthenticated, getToken, logout } from "../../services/auth";
 
 export default function SignIn(event) {
   const [listUser, setListUser] = useState();
+  const [listUserAnalitics, setListUserAnalitics] = useState();
   const history = useHistory();
   const { register, handleSubmit, setValue, getValues } = useForm({});
   const [displayEdit, setDisplayEdit] = useState(false);
   const [displayDetails, setDisplayDetais] = useState(false);
+  const [displayCluster, setDisplayCluster] = useState(false);
   const [modalHeader, setModalHeader] = useState('');
-  const [objDetail, setObjDetail] = useState();
   const toast = useRef(null);
   const dialogFuncMap = {
     'displayEdit': setDisplayEdit,
-    'displayDetails': setDisplayDetais
+    'displayDetails': setDisplayDetais,
+    "displayCluster": setDisplayCluster
   }
 
   function handleLogout() {
@@ -94,6 +98,7 @@ export default function SignIn(event) {
         Authorization: 'Bearer' + getToken
       })
         .then(response => {
+          console.log(response.data)
           setListUser(response.data);
         })
         .catch((error) => {
@@ -129,7 +134,6 @@ export default function SignIn(event) {
 
   function detalhar(rowData) {
     showModal('displayDetails', "Detalhar", rowData)
-    setObjDetail(listUser.find(item => { return item.id == rowData.id }))
   }
 
   function actionBodyTemplate(rowData) {
@@ -151,6 +155,40 @@ export default function SignIn(event) {
       </div>
     );
   }
+
+  function renderFooterAnalitcis(name) {
+    return (
+      <div>
+        <Button label="Fechar" icon="pi pi-times" onClick={() => onHide(name)} className="p-button-text" />
+      </div>
+    );
+  }
+
+  function Analise() {
+    let clusters = {}
+    dialogFuncMap[`displayCluster`](true);
+    setModalHeader("Análise")
+    listUser.map(item => {
+      if (clusters[item.score.cluster]) {
+        clusters[item.score.cluster].push(item)
+      }
+      else {
+        clusters[item.score.cluster] = [item]
+      }
+    })
+    setListUserAnalitics(clusters)
+  }
+
+  function achaParecidos(cluster, fingerprint) {
+    console.log(fingerprint)
+    /* let jsonFinger = JSON.parse(fingerprint)
+    let listaFingerParecidos = []
+    cluster.map(itemCluster => {
+      console.log(itemCluster)
+    }) */
+
+  }
+
 
   return (
     <div className="">
@@ -182,51 +220,72 @@ export default function SignIn(event) {
             <div>
               <Button label="Mostra lista de usuários" className="ml-3" onClick={loadUserList} />
               <Button label="Limpar lista de usuários" className="ml-3" onClick={() => setListUser()} />
+              {listUser && <Button label="Análise de Usuários" className="ml-3" onClick={() => Analise()} />}
             </div>
             <div>
               {listUser &&
                 <div className="card">
                   <DataTable value={listUser}>
-                    <Column field="id" header="ID"></Column>
-                    <Column field="nome" header="Nome"></Column>
-                    <Column body={(rowData) => getProp(rowData.dados, "email")} header="Email"></Column>
-                    <Column body={(rowData) => getProp(rowData.dados, "telefone")} header="Telefone"></Column>
-                    <Column body={actionTemplate} style={{ width: '150px' }} header="Ações"></Column>
+                    <Column field="id" header="ID" style={{ width: '50px' }} />
+                    <Column field="nome" header="Nome" sortable />
+                    <Column body={(rowData) => getProp(rowData.dados, "email")} header="Email" />
+                    <Column field="score.cluster" header="Cluster" sortable />
+                    <Column body={actionTemplate} style={{ width: '150px' }} header="Ações" />
                   </DataTable>
                 </div>
               }
             </div>
-            <Dialog visible={displayDetails} header={`${modalHeader} Usuário`} style={{ width: '40vw' }} onHide={() => onHide('displayDetails')}>
+            <Dialog visible={displayDetails} header={`${modalHeader} Usuário`} style={{ width: '80vw' }} onHide={() => onHide('displayDetails')}>
+              <Divider />
 
-              <div className="row">
-                <div className="col offset-s3 s6">
+              <div className="grid">
 
-                  <div className="row">
-                    <p htmlFor="Nome">Nome</p>
-                    <label> {getValues("nome")}</label>
-                  </div>
+                <div className="col-12">
+                  <div className="grid">
+                    <div className="col">
+                      <p><b>Nome</b></p>
+                      <label> {getValues("nome")}</label>
+                    </div>
 
-                  <div className="row">
-                    <p htmlFor="Email">E-mail</p>
-                    <label> {getValues("dados.email.0.email")}</label>
-                  </div>
-                  <div className="row">
-                    <p htmlFor="Telefone">Telefone</p>
-                    <label> {getValues("dados.telefone.0.telefone")}</label>
-                  </div>
-                  <div className="row">
-                    <p htmlFor="Telefone">Telefone</p>
-                    <label> {getValues("dados.telefone.0.telefone")}</label>
-                  </div>
-                  <div className="row">
-                    <p htmlFor="Telefone">Telefone</p>
-                    <label> {getValues("dados.telefone.0.telefone")}</label>
-                  </div>
-                  <div className="row">
-                    <p htmlFor="Telefone">Telefone</p>
-                    <label> {getValues("dados.telefone.0.telefone")}</label>
+                    <div className="col">
+                      <p><b>E-mail</b></p>
+                      <label> {getValues("dados.email.0.email")}</label>
+                    </div>
+
+                    <div className="col">
+                      <p><b>Telefone</b></p>
+                      <label> {getValues("dados.telefone.0.telefone")}</label>
+                    </div>
                   </div>
                 </div>
+                <Divider />
+
+                <div className="col-12">
+                  <div className="grid">
+                    <div className="col">
+                      <p><b>Fingerprint</b></p>
+                      <label> {getValues("fingerprint")}</label>
+                    </div>
+                    <div className="col">
+                      <p><b>Cluster</b></p>
+                      <label> {getValues("score.cluster")}</label>
+                    </div>
+                  </div>
+                </div>
+                <Divider />
+
+                <p><b>Score</b></p>
+
+                <div className="col-12">
+                  <p><b>Fingerprint</b></p>
+                  <label> {getValues("score.fingerPrint")}</label>
+                </div>
+
+                <div className="col-12">
+                  <p><b>Trace Router</b></p>
+                  <label> {getValues("score.traceRouter")}</label>
+                </div>
+
               </div>
             </Dialog>
 
@@ -252,9 +311,53 @@ export default function SignIn(event) {
                 </div>
               </div>
             </Dialog>
+
+
+            <Dialog visible={displayCluster} header={`${modalHeader} Usuário`} style={{ width: '80vw' }} footer={renderFooterAnalitcis('displayCluster')} onHide={() => onHide('displayCluster')}>
+
+
+              <Accordion activeIndex={0}>
+                {listUserAnalitics &&
+                  Object.keys(listUserAnalitics).map(item => {
+                    return (
+                      < AccordionTab header={`${item}`} >
+                        {listUserAnalitics[item].map(usuario => {
+                          return (
+                            <>
+                              <div className="grid">
+                                <div className="col">
+                                  <p><b>Nome</b></p>
+                                  <label> {usuario.nome}</label>
+                                </div>
+                                <div className="col">
+                                  <p><b>Fingerprint</b></p>
+                                  <label> {usuario.fingerprint}</label>
+                                </div>
+                              </div>
+
+                              <div className="grid">
+                                <div className="col">
+                                  <p><b>Finger Parecidos</b></p>
+                                  <label> {achaParecidos(listUserAnalitics[item],usuario.score.fingerPrint)}</label>
+                                </div>
+                              </div>
+                            </>
+                          )
+                        })
+                        }
+
+                      </AccordionTab>
+                    )
+
+                  })
+
+                }
+              </Accordion>
+
+            </Dialog>
           </Card>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
