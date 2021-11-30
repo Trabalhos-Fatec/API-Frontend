@@ -180,13 +180,18 @@ export default function SignIn(event) {
   }
 
   function achaParecidos(cluster, fingerprint) {
-    console.log(fingerprint)
-    /* let jsonFinger = JSON.parse(fingerprint)
+    let jsonFinger = JSON.parse(fingerprint.replaceAll('{', '{"').replaceAll(':', '":').replaceAll(', ', ', "'))
     let listaFingerParecidos = []
-    cluster.map(itemCluster => {
-      console.log(itemCluster)
-    }) */
-
+    for(const person in jsonFinger){
+      if(jsonFinger[person]>0.7){
+        listaFingerParecidos.push(person)
+      }
+    }
+    console.log(listaFingerParecidos)
+    if(listaFingerParecidos.length === 0){
+      listaFingerParecidos = 'Nenhum Fingerprint semelhante'
+    }
+    return listaFingerParecidos.toString()
   }
 
 
